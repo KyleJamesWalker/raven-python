@@ -55,13 +55,12 @@ class ClosingIterator(Iterator):
         try:
             with common_exception_handling(self.environ, self.sentry):
                 return next(self.iterable)
-        except StopIteration:
+        finally:
             # We auto close here if we reach the end because some WSGI
             # middleware does not really like to close things.  To avoid
             # massive leaks we just close automatically at the end of
             # iteration.
             self.close()
-            raise
 
     def close(self):
         if self.closed:
